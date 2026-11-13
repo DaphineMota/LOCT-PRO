@@ -190,17 +190,26 @@ async registerContact(code, uid, name) {
   );
 
   // Cadastra o contato no Firebase.
-  await set(contact, {
-    name,
-    online: true,
-    joinedAt: Date.now(),
-    ackedAlertId: ''
-  });
+ 
+console.log('ETAPA 1: tentando cadastrar contato');
 
-  // Marca o contato como offline ao desconectar.
-  await onDisconnect(contact).update({
-    online: false
-  });
+await set(contact, {
+  name,
+  online: true,
+  joinedAt: Date.now(),
+  ackedAlertId: ''
+});
+
+console.log('ETAPA 1: cadastro realizado com sucesso');
+
+console.log('ETAPA 2: configurando desconexão');
+
+await onDisconnect(contact).update({
+  online: false
+});
+
+console.log('ETAPA 2: desconexão configurada');
+
 
   if (this.connectionUnsub) {
     this.connectionUnsub();
