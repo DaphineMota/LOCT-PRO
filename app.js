@@ -120,49 +120,18 @@
     }
     async setAlert(code, alert) { await this.mutate(code, room => { room.alert = alert; }); }
    
+
 async registerContact(code, uid, name) {
-  const { set, ref, onDisconnect, onValue } = this.dbApi;
+  await this.mutate(code, room => {
+    room.contacts ||= {};
 
-  const contact = ref(
-    this.db,
-    `${this.path(code)}/contacts/${uid}`
-  );
-
-  // Primeiro cadastra o contato.
-  await set(contact, {
-    name: name,
-    online: true,
-    joinedAt: Date.now(),
-    ackedAlertId: ""
+    room.contacts[uid] = {
+      name,
+      online: true,
+      joinedAt: Date.now(),
+      ackedAlertId: ''
+    };
   });
-
-  // Depois configura a desconexão automática.
-  await onDisconnect(contact).update({
-    online: false
-  });
-
-  if (this.connectionUnsub) {
-    this.connectionUnsub();
-  }
-
-  this.connectionUnsub = onValue(
-    ref(this.db, ".info/connected"),
-    (snapshot) => {
-      if (
-        snapshot.val() === true &&
-        state.code === code &&
-        state.role === "contact"
-      ) {
-        void onDisconnect(contact)
-          .update({ online: false })
-          .catch(console.warn);
-
-        void this.dbApi
-          .update(contact, { online: true })
-          .catch(console.warn);
-      }
-    }
-  );
 }
 
     async ack(code, uid, id) { await this.mutate(code, room => { if (room.contacts?.[uid]) room.contacts[uid].ackedAlertId = id; }); }
@@ -211,20 +180,52 @@ async registerContact(code, uid, name) {
       const {update, ref} = this.dbApi;
       await update(ref(this.db, this.path(code)), { alert });
     }
-    async registerContact(code, uid, name) {
-      const {set, ref, onDisconnect, onValue} = this.dbApi;
-      const contact = ref(this.db, `${this.path(code)}/contacts/${uid}`);
-      // O desconectar garante que a lista mostre um estado mais útil após a perda de conexão.
-      await onDisconnect(contact).update({ online: false });
-      await set(contact, {name, online: true, joinedAt: Date.now(), ackedAlertId: ''});
-      if (this.connectionUnsub) this.connectionUnsub();
-      this.connectionUnsub = onValue(ref(this.db, '.info/connected'), (s) => {
-        if (s.val() === true && state.code === code && state.role === 'contact') {
-          void onDisconnect(contact).update({online: false}).catch(console.warn);
-          void this.dbApi.update(contact, {online: true}).catch(console.warn);
-        }
-      });
+    
+async registerContact(code, uid, name) {
+  const { set, ref, onDisconnect, onValue } = this.dbApi;
+
+  const contact = ref(
+    this.db,
+    `${this.path(code)}/contacts/${uid}`
+  );
+
+  // Cadastra o contato no Firebase.
+  await set(contact, {
+    name,
+    online: true,
+    joinedAt: Date.now(),
+    ackedAlertId: ''
+  });
+
+  // Marca o contato como offline ao desconectar.
+  await onDisconnect(contact).update({
+    online: false
+  });
+
+  if (this.connectionUnsub) {
+    this.connectionUnsub();
+  }
+
+  this.connectionUnsub = onValue(
+    ref(this.db, '.info/connected'),
+    snapshot => {
+      if (
+        snapshot.val() === true &&
+        state.code === code &&
+        state.role === 'contact'
+      ) {
+        void onDisconnect(contact)
+          .update({ online: false })
+          .catch(console.warn);
+
+        void this.dbApi
+          .update(contact, { online: true })
+          .catch(console.warn);
+      }
     }
+  );
+}
+
     async ack(code, uid, id) {
       const {update, ref} = this.dbApi;
       await update(ref(this.db, `${this.path(code)}/contacts/${uid}`), {ackedAlertId: id});
