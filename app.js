@@ -547,6 +547,28 @@ function hideAlert() {
     finally { setBusy(false); }
   }
 
+
+function setBusy(on) {
+  state.loading = on;
+
+  const buttons = [
+    'enterBtn',
+    'emitAlertBtn',
+    'cancelAlertBtn',
+    'connectBtn',
+    'ackButton'
+  ];
+
+  for (const id of buttons) {
+    const button = document.getElementById(id);
+
+    if (button) {
+      button.disabled = on;
+    }
+  }
+}
+
+
   $('loginForm').addEventListener('submit', event => {
     event.preventDefault();
     const name = $('nameField').value.trim().replace(/\s+/g,' ');
