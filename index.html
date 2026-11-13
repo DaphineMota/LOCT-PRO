@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+  <meta content="#090a0c" name="theme-color"/>
+  <meta content="LOCT PRO — mais segurança pra elas. Aplicativo de localização e alertas." name="description"/>
+  <title>
+   LOCT PRO — mais segurança pra elas
+  </title>
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+  <link href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMwOTBhMGMiLz48cGF0aCBkPSJNMTggMTloMjh2N0gyNnY2aDE3djdIMjZ2NmgyMHY3SDE4eiIgZmlsbD0id2hpdGUiLz48Y2lyY2xlIGN4PSI1MSIgY3k9IjQ5IiByPSI0IiBmaWxsPSIjZmY1NTVjIi8+PC9zdmc+Cg==" rel="icon"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="style.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <div class="app-shell">
+   <main class="device">
+    <header class="app-header">
+     <div class="brand">
+      <div class="brand-tag">
+       PRO
+       <span class="tag-dash">
+       </span>
+       APP
+      </div>
+      <h1>
+       LOCT
+       <span class="brand-dot">
+        .
+       </span>
+      </h1>
+      <p>
+       mais segurança pra elas
+      </p>
+     </div>
+     <div aria-label="Ícone de proteção" class="header-icon">
+      <svg aria-hidden="true" viewbox="0 0 24 24">
+       <path d="M12 2 20 6v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4Z">
+       </path>
+       <path d="m9 12 2 2 4-4">
+       </path>
+      </svg>
+     </div>
+    </header>
+    <div class="ribbon">
+     <span class="ribbon-dot">
+     </span>
+     <span id="connectionBadge">
+      Conexão segura
+     </span>
+     <span class="ribbon-label">
+      ISBET · PROJETO SOCIAL
+     </span>
+    </div>
+    <section class="view" id="loginView">
+     <div class="hero-card">
+      <span class="eyebrow">
+       SEGURANÇA COMEÇA COM CONEXÃO
+      </span>
+      <h2>
+       Esteja perto.
+       <br/>
+       <span>
+        Mesmo de longe.
+       </span>
+      </h2>
+      <p>
+       Conecte-se a quem importa e acompanhe alertas em tempo real.
+      </p>
+      <div class="hero-orbit">
+       <span class="orbit-core">
+        E
+       </span>
+       <span class="orbit-ring ring-one">
+       </span>
+       <span class="orbit-ring ring-two">
+       </span>
+       <span class="orbit-spark spark-one">
+       </span>
+       <span class="orbit-spark spark-two">
+       </span>
+      </div>
+     </div>
+     <form class="panel form-panel" id="loginForm">
+      <div class="section-header">
+       <span class="step">
+        01
+       </span>
+       <div>
+        <h3>
+         Vamos começar?
+        </h3>
+        <p>
+         Informe seu nome para entrar no LOCT.
+        </p>
+       </div>
+      </div>
+      <label for="nameField">
+       SEU NOME
+      </label>
+      <input autocomplete="name" id="nameField" maxlength="60" placeholder="Como podemos chamar você?" required="" type="text"/>
+      <button class="btn btn-primary" id="enterBtn" type="submit">
+       Continuar
+       <span aria-hidden="true">
+        ↗
+       </span>
+      </button>
+     </form>
+     <p class="small-note">
+      Conecte sua rede de apoio de forma simples e rápida.
+     </p>
+    </section>
+    <section class="view hidden" id="ownerView">
+     <div class="welcome-row">
+      <div>
+       <span class="eyebrow">
+        PAINEL PRINCIPAL
+       </span>
+       <h2>
+        Olá, Daph
+        <span class="wave">
+         ✦
+        </span>
+       </h2>
+       <p>
+        Acompanhe sua rede de apoio.
+       </p>
+      </div>
+      <div class="profile-big">
+       <img alt="Foto do usuário" src="assets/perfil-1.png"/>
+      </div>
+     </div>
+     <div class="panel session-panel">
+      <div class="panel-top">
+       <span class="eyebrow">
+        CÓDIGO DA SUA CONEXÃO
+       </span>
+       <span class="chip">
+        <span class="live-dot">
+        </span>
+        Sessão ativa
+       </span>
+      </div>
+      <div class="code-row">
+       <strong class="session-code" id="ownerCode">
+        LOCT-000000
+       </strong>
+       <button aria-label="Copiar código de conexão" class="icon-btn" id="copyCodeBtn" title="Copiar código" type="button">
+        ⧉
+       </button>
+      </div>
+      <p>
+       Compartilhe esse código com os contatos que vão acompanhar você.
+      </p>
+     </div>
+     <div class="panel map-panel">
+      <div class="panel-title">
+       <div>
+        <span class="eyebrow">
+         LOCALIZAÇÃO COMPARTILHADA
+        </span>
+        <h3>
+         Meu ponto no mapa
+        </h3>
+       </div>
+       <span class="chip neutral">
+        ATIVO
+       </span>
+      </div>
+      <div aria-label="Mapa do endereço em Campinas" class="map" id="ownerMap" role="img">
+      </div>
+      <div class="location-footer">
+       <span class="pin-icon">
+        ⌖
+       </span>
+       <div>
+        <strong>
+         Rua General Osório
+        </strong>
+        <p>
+         Campinas, SP
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="panel controls-panel">
+      <div class="panel-title">
+       <div>
+        <span class="eyebrow">
+         ALERTA
+        </span>
+        <h3>
+         Central de alerta
+        </h3>
+       </div>
+       <span class="chip neutral" id="ownerAlertChip">
+        Sem alertas
+       </span>
+      </div>
+      <p>
+       Acione o alerta para avisar seus contatos conectados.
+      </p>
+      <button class="btn btn-emergency" id="emitAlertBtn" type="button">
+       <span class="siren-glyph">
+        !
+       </span>
+       EMITIR ALERTA
+       <span>
+        ↗
+       </span>
+      </button>
+      <button class="btn btn-secondary" id="cancelAlertBtn" type="button">
+       Encerrar alerta
+      </button>
+      <p class="helper" id="ownerAlertStatus">
+       Nenhum alerta em andamento.
+      </p>
+     </div>
+     <div class="panel contacts-panel">
+      <div class="panel-title">
+       <div>
+        <span class="eyebrow">
+         REDE DE APOIO
+        </span>
+        <h3>
+         Contatos conectados
+        </h3>
+       </div>
+       <span class="count-pill" id="contactCount">
+        0
+       </span>
+      </div>
+      <div class="contacts-list" id="contactsList">
+       <p class="empty-text">
+        Aguardando contatos entrarem com seu código…
+       </p>
+      </div>
+     </div>
+     <button class="text-button" id="ownerLeaveBtn" type="button">
+      Sair deste painel
+     </button>
+    </section>
+    <section class="view hidden" id="joinView">
+     <div class="welcome-row">
+      <div>
+       <span class="eyebrow">
+        REDE DE APOIO
+       </span>
+       <h2 id="greeting">
+        Olá!
+       </h2>
+       <p>
+        Você está a um código de distância.
+       </p>
+      </div>
+      <div class="round-icon">
+       ↗
+      </div>
+     </div>
+     <form class="panel form-panel" id="joinForm">
+      <div class="section-header">
+       <span class="step">
+        02
+       </span>
+       <div>
+        <h3>
+         Conecte-se ao LOCT
+        </h3>
+        <p>
+         Digite o código compartilhado pelo usuário.
+        </p>
+       </div>
+      </div>
+      <label for="codeField">
+       CÓDIGO DO USUÁRIO
+      </label>
+      <input autocapitalize="characters" autocomplete="off" id="codeField" maxlength="10" placeholder="LOCT-123456" required="" type="text"/>
+      <button class="btn btn-primary" type="submit">
+       Conectar
+       <span>
+        ↗
+       </span>
+      </button>
+      <p class="helper">
+       Ao conectar, vamos habilitar o som do alerta. Deixe o volume do celular ligado.
+      </p>
+     </form>
+     <div class="explain-card">
+      <div class="explain-symbol">
+       ◇
+      </div>
+      <div>
+       <strong>
+        Como funciona?
+       </strong>
+       <p>
+        Você poderá visualizar a localização e receber o aviso de emergência.
+       </p>
+      </div>
+     </div>
+     <button class="text-button" id="joinBackBtn" type="button">
+      Voltar ao cadastro
+     </button>
+    </section>
+    <section class="view hidden" id="contactView">
+     <div class="welcome-row">
+      <div>
+       <span class="eyebrow">
+        VOCÊ FAZ PARTE DO LOCT
+       </span>
+       <h2 id="contactGreeting">
+        Conectado!
+       </h2>
+       <p>
+        Seu papel é estar presente.
+       </p>
+      </div>
+      <div class="round-icon success-icon">
+       ✓
+      </div>
+     </div>
+     <div class="panel connection-panel">
+      <span class="eyebrow">
+       CONEXÃO ESTABELECIDA
+      </span>
+      <div class="connected-person">
+       <img alt="Foto do usuário" src="assets/perfil-1.png"/>
+       <div>
+        <h3>
+         Daphine
+        </h3>
+        <p>
+         Compartilhando localização
+        </p>
+       </div>
+       <span class="connection-mark">
+        ●
+       </span>
+      </div>
+      <div class="status-strip">
+       <span>
+        SESSÃO
+       </span>
+       <strong id="contactSessionCode">
+        —
+       </strong>
+      </div>
+     </div>
+     <div class="panel map-panel">
+      <div class="panel-title">
+       <div>
+        <span class="eyebrow">
+         ACOMPANHAMENTO
+        </span>
+        <h3>
+         Localização compartilhada
+        </h3>
+       </div>
+       <span class="chip neutral">
+        ATIVO
+       </span>
+      </div>
+      <div aria-label="Mapa do endereço em Campinas" class="map" id="contactMap" role="img">
+      </div>
+      <div class="location-footer">
+       <span class="pin-icon">
+        ⌖
+       </span>
+       <div>
+        <strong>
+         Rua General Osório
+        </strong>
+        <p>
+         Campinas, SP
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="panel notification-panel">
+      <div class="panel-title">
+       <div>
+        <span class="eyebrow">
+         SEUS AVISOS
+        </span>
+        <h3>
+         Status de segurança
+        </h3>
+       </div>
+       <span class="chip green-chip" id="contactAlertChip">
+        Monitorando
+       </span>
+      </div>
+      <p id="contactStatusText">
+       Tudo tranquilo por enquanto. Aguardando um possível alerta.
+      </p>
+      <div class="audio-row">
+       <span id="soundStatus">
+        Som: toque em “Testar som”
+       </span>
+       <button class="btn btn-mini" id="testSoundBtn" type="button">
+        Testar som ♪
+       </button>
+      </div>
+     </div>
+     <button class="text-button" id="contactLeaveBtn" type="button">
+      Desconectar
+     </button>
+    </section>
+    <footer class="bottom-footer">
+     <span>
+      LOCT PRO / CONECTADO
+     </span>
+     <span>
+      MAIS SEGURANÇA PRA ELAS
+     </span>
+    </footer>
+   </main>
+  </div>
+  <div aria-labelledby="alertHeading" aria-modal="true" class="alert-modal hidden" id="alertModal" role="dialog">
+   <div class="alert-dialog">
+    <div class="alert-top">
+     <span>
+      ● ALERTA DE EMERGÊNCIA
+     </span>
+     <span id="alertClock">
+      AGORA
+     </span>
+    </div>
+    <div class="alert-symbol">
+     !
+    </div>
+    <h2 id="alertHeading">
+     PEDIDO DE AJUDA
+    </h2>
+    <p>
+     Um alerta foi emitido por Daphine. Confira o endereço compartilhado.
+    </p>
+    <div class="alert-user">
+     <img alt="Foto do usuário" src="assets/perfil-1.png"/>
+     <div>
+      <strong>
+       Daphine
+      </strong>
+      <span>
+       Rua General Osório · Campinas
+      </span>
+     </div>
+    </div>
+    <button class="btn btn-primary" id="ackButton" type="button">
+     Confirmar recebimento ✓
+    </button>
+    <button class="btn btn-ghost" id="dismissButton" type="button">
+     Fechar aviso
+    </button>
+   </div>
+  </div>
+
+  <div aria-live="polite" class="toast hidden" id="toast" role="status">
+  </div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+
+ </body>
+</html>
+
