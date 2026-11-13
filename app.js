@@ -119,12 +119,52 @@
       this.notify();
     }
     async setAlert(code, alert) { await this.mutate(code, room => { room.alert = alert; }); }
-    async registerContact(code, uid, name) {
-      await this.mutate(code, room => {
-        room.contacts ||= {};
-        room.contacts[uid] = { name, online: true, joinedAt: Date.now(), ackedAlertId: '' };
-      });
+   
+async registerContact(code, uid, name) {
+  const { set, ref, onDisconnect, onValue } = this.dbApi;
+
+  const contact = ref(
+    this.db,
+    `${this.path(code)}/contacts/${uid}`
+  );
+
+  // Primeiro cadastra o contato.
+  await set(contact, {
+    name: name,
+    online: true,
+    joinedAt: Date.now(),
+    ackedAlertId: ""
+  });
+
+  // Depois configura a desconexão automática.
+  await onDisconnect(contact).update({
+    online: false
+  });
+
+  if (this.connectionUnsub) {
+    this.connectionUnsub();
+  }
+
+  this.connectionUnsub = onValue(
+    ref(this.db, ".info/connected"),
+    (snapshot) => {
+      if (
+        snapshot.val() === true &&
+        state.code === code &&
+        state.role === "contact"
+      ) {
+        void onDisconnect(contact)
+          .update({ online: false })
+          .catch(console.warn);
+
+        void this.dbApi
+          .update(contact, { online: true })
+          .catch(console.warn);
+      }
     }
+  );
+}
+
     async ack(code, uid, id) { await this.mutate(code, room => { if (room.contacts?.[uid]) room.contacts[uid].ackedAlertId = id; }); }
     async leave(code, uid) { await this.mutate(code, room => { if (room.contacts?.[uid]) room.contacts[uid].online = false; }); }
     subscribe(code, cb) {
